@@ -25,12 +25,13 @@ namespace MassTransit.Azure.Consumer
 
             services.AddMassTransit(x =>
             {
+                // 加载指定类型所在 namespace 中所有 IConsumer 实现类
                 x.AddConsumersFromNamespaceContaining<DoThingHandler>();
 
                 x.AddBus(provider => Bus.Factory.CreateUsingAzureServiceBus(serviceBus =>
                 {
                     serviceBus.Host(connectionString);
-
+                    // 配置 receive endpoint
                     serviceBus.ReceiveEndpoint("consumer", endpoint =>
                     {
                         endpoint.ConfigureConsumers(provider);
@@ -41,15 +42,15 @@ namespace MassTransit.Azure.Consumer
             });
 
             return services.BuildServiceProvider().GetService<IBusControl>();
-        } 
+        }
 
-        private static async Task RunApplication(IBusControl busControl)
+        private static async Task RunApplication(IBusControl bus)
         {
-            await busControl.StartAsync();
+            await bus.StartAsync();
 
             do
             {
-                Console.WriteLine("Waiting....");
+                Console.WriteLine("Waiting message...., Esc to exit");
 
                 if (Console.ReadKey().Key == ConsoleKey.Escape)
                 {
@@ -58,7 +59,7 @@ namespace MassTransit.Azure.Consumer
 
             } while (true);
 
-            await busControl.StopAsync();
+            await bus.StopAsync();
         }
     }
 }

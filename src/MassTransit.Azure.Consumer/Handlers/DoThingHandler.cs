@@ -10,13 +10,13 @@ namespace MassTransit.Azure.Consumer.Handlers
         {
             Console.WriteLine($"Doing thing - {context.Message.Id}");
 
-            await context.SchedulePublish(DateTime.Now.AddSeconds(10), new DoSomethingElse {Id = context.Message.Id});
+            await context.SchedulePublish(DateTime.Now.AddSeconds(10), new DoSomethingElse { Id = context.Message.Id });
         }
 
         public Task Consume(ConsumeContext<Fault<DoThing>> context)
         {
             Console.WriteLine($"Doing thing went wrong - {context.Message.Message.Id}");
-            
+
             return Task.CompletedTask;
         }
     }

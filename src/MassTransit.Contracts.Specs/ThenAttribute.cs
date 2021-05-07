@@ -2,7 +2,6 @@ using Xunit;
 
 namespace MassTransit.Contracts.Specs
 {
-    public class ThenAttribute : FactAttribute
-    {
-    }
+    // 扩展用于单元测是的 attribute
+    public class ThenAttribute : FactAttribute { }
 }

@@ -6,11 +6,18 @@ namespace MassTransit.Contracts
 {
     public class AccountId : AbstractIdentity
     {
-        public static AccountId New => new AccountId {Value = Guid.NewGuid()};
+        // public static AccountId New => new AccountId { Value = Guid.NewGuid() };
 
-        private AccountId()
+        public static AccountId New
         {
+            get
+            {
+                return new AccountId { Value = Guid.NewGuid() };
+            }
         }
+
+        // 私有构造器，只能通过静态 New() 来实例化 AccountId
+        private AccountId() { }
     }
 
     public class RegisterAccount
@@ -24,7 +31,7 @@ namespace MassTransit.Contracts
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public AccountRegistered(Account account) 
+        public AccountRegistered(Account account)
             : base(account)
         {
         }
@@ -35,9 +42,8 @@ namespace MassTransit.Contracts
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
 
-        private AccountName()
-        {
-        }
+        // 私有构造器，只能通过静态 Create() 实例化
+        private AccountName() { }
 
         public static AccountName Create(string firstName, string lastName)
         {
@@ -53,7 +59,8 @@ namespace MassTransit.Contracts
 
             return new AccountName
             {
-                FirstName = firstName, LastName = lastName
+                FirstName = firstName,
+                LastName = lastName
             };
         }
     }
@@ -63,7 +70,7 @@ namespace MassTransit.Contracts
         public AccountName AccountName { get; private set; }
 
         private Account()
-        { 
+        {
         }
 
         public static Account Register(RegisterAccount command)
@@ -133,7 +140,7 @@ namespace MassTransit.Contracts
         public abstract void Apply(AbstractDomainEvent<TIdentity> domainEvent);
     }
 
-    public abstract class AbstractDomainEvent<TIdentity>  where TIdentity : AbstractIdentity
+    public abstract class AbstractDomainEvent<TIdentity> where TIdentity : AbstractIdentity
     {
         public Guid Id { get; private set; }
         public TIdentity AggregateId { get; private set; }
